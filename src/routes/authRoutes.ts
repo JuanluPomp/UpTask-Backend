@@ -12,7 +12,7 @@ router.post('/create-account',
         isLength({min: 8}).withMessage('La contraseña es obligatoria y debe tener al menos 8 caracteres'),
     body('email').
         isEmail().withMessage('El email no es valido'),
-    body('password_comfirmation').custom((value, {req}) => {
+    body('password_confirmation').custom((value, {req}) => {
         if(value !== req.body.password){
             throw new Error('Las contraseñas no son iguales')
         }
@@ -20,6 +20,34 @@ router.post('/create-account',
     }),
     handleInputErrors,
     AuthController.createAccount
+)
+
+router.post('/confirm-account',
+    body('token').
+        notEmpty().withMessage('El token es obligatorio'),
+    handleInputErrors,
+    AuthController.confirmAccount
+)
+
+router.post('/login',
+    body('email').
+        notEmpty().withMessage('El email es obligatorio'),
+    body('password').
+        notEmpty().withMessage('El password es obligatorio'),
+    handleInputErrors,
+    AuthController.login
+)
+router.post('/request-code',
+    body('email').
+        notEmpty().withMessage('El emial es obligatorio'),
+    handleInputErrors,
+    AuthController.requestNewConfirmationCode
+)
+router.post('/forgot-password',
+    body('email').
+        notEmpty().withMessage('El emial es obligatorio'),
+    handleInputErrors,
+    AuthController.forgotPassword
 )
 
 export default router
